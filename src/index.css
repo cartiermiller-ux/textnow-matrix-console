@@ -1,0 +1,255 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+==========================================================================
+【AI HANDOVER NOTE】
+1. DESIGN PHILOSOPHY:
+   - Core design philosophy: Professional Efficiency & Systematic Reliability. This dashboard manages a complex matrix of TextNow protocol accounts, requiring a UI that prioritizes data density and clarity over decorative elements.
+   - Visual style description: Neo-minimalist Admin (Layui-inspired). It utilizes a high-contrast sidebar (Dark) against a clean, structured workspace (Light) to delineate navigation from action. Surfaces use subtle borders and consistent padding to create a 'Bento' modular feel for the 15-field account data tables.
+   - Why this style was chosen: The user specifically requested a Layui-style lightweight console. This ensures low cognitive load for operators managing thousands of accounts and high-volume messaging tasks while maintaining a modern React-based feel.
+
+2. TYPOGRAPHY:
+   - Sans font choice: 'Inter' combined with 'Noto Sans SC'. Inter provides exceptional legibility for English identifiers and protocol status codes, while Noto Sans SC ensures professional rendering for Chinese system labels.
+   - Mono font choice: 'JetBrains Mono'. Crucial for the JSONL import/export functionality and displaying '全参' (full parameter) protocol strings, where character distinction (0 vs O, l vs 1) is vital for debugging.
+
+3. COLOR SYSTEM:
+   - Brand primary color: A 'Professional Navy Blue' (Hue 245). This hue is chosen to convey trust, stability, and authority, distancing the tool from 'toy' scripts and positioning it as enterprise-grade infrastructure.
+   - Mapping: The --brand primary maps directly to --primary for action buttons and --sidebar-primary for active navigation states. The --accent uses a lower chroma version of the same hue to highlight rows without visual fatigue.
+   - Semantic logic: Success (H 150) for 'Online/Active' accounts, Warning (H 45) for 'Risk Detected', and Destructive (H 25) for 'Banned/Blocked' accounts. Each follows a consistent lightness curve for accessibility.
+
+4. USAGE GUIDE:
+   - Layout type: Dashboard full-width. Given the 15-field account tables, a fluid layout is required to prevent excessive horizontal scrolling. 
+   - Recommended effect usage: Use subtle 'rim-light' (1px top border) on cards to simulate physicality. Use 'backdrop-blur' on the top header and popovers for a layered sense of depth.
+   - Project-specific rules: VARIANCE level is LOW. Maintain strict grid alignment. Ensure all protocol data displays use the Mono font stack. Sidebars must remain dark (oklch 0.2) even in light mode to preserve the requested Layui aesthetic.
+==========================================================================
+*/
+
+:root {
+  /* Typography */
+  --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "Cascadia Code", "PingFang SC", monospace;
+  
+  /* Radius */
+  --radius: 0.5rem;
+
+  /* Core UI Tokens */
+  --background: oklch(0.99 0.002 245);
+  --foreground: oklch(0.18 0.02 245);
+  --card: oklch(1.0 0.0 0);
+  --card-foreground: oklch(0.18 0.02 245);
+  --popover: oklch(1.0 0.0 0);
+  --popover-foreground: oklch(0.18 0.02 245);
+  --primary: oklch(0.48 0.14 245);
+  --primary-foreground: oklch(0.99 0.005 245);
+  --secondary: oklch(0.96 0.01 245);
+  --secondary-foreground: oklch(0.25 0.04 245);
+  --muted: oklch(0.96 0.005 245);
+  --muted-foreground: oklch(0.45 0.02 245);
+  --accent: oklch(0.94 0.02 245);
+  --accent-foreground: oklch(0.25 0.06 245);
+  --destructive: oklch(0.60 0.18 25);
+  --destructive-foreground: oklch(0.99 0.01 25);
+  --border: oklch(0.91 0.01 245);
+  --input: oklch(0.91 0.01 245);
+  --ring: oklch(0.48 0.14 245);
+  
+  /* Chart Tokens */
+  --chart-1: oklch(0.55 0.16 245);
+  --chart-2: oklch(0.65 0.14 150);
+  --chart-3: oklch(0.75 0.12 45);
+  --chart-4: oklch(0.85 0.10 280);
+  --chart-5: oklch(0.60 0.15 10);
+  
+  /* Sidebar Tokens */
+  --sidebar: oklch(0.20 0.03 245);
+  --sidebar-foreground: oklch(0.92 0.01 245);
+  --sidebar-primary: oklch(0.55 0.16 245);
+  --sidebar-primary-foreground: oklch(1.0 0.0 0);
+  --sidebar-accent: oklch(0.28 0.04 245);
+  --sidebar-accent-foreground: oklch(0.98 0.01 245);
+  --sidebar-border: oklch(0.28 0.03 245);
+  --sidebar-ring: oklch(0.55 0.16 245);
+}
+
+.dark {
+  --background: oklch(0.14 0.02 245);
+  --foreground: oklch(0.94 0.01 245);
+  --card: oklch(0.18 0.02 245);
+  --card-foreground: oklch(0.94 0.01 245);
+  --popover: oklch(0.18 0.02 245);
+  --popover-foreground: oklch(0.94 0.01 245);
+  --primary: oklch(0.62 0.12 245);
+  --primary-foreground: oklch(0.12 0.02 245);
+  --secondary: oklch(0.22 0.03 245);
+  --secondary-foreground: oklch(0.94 0.01 245);
+  --muted: oklch(0.22 0.02 245);
+  --muted-foreground: oklch(0.70 0.02 245);
+  --accent: oklch(0.25 0.04 245);
+  --accent-foreground: oklch(0.94 0.01 245);
+  --destructive: oklch(0.55 0.18 25);
+  --destructive-foreground: oklch(0.98 0.01 25);
+  --border: oklch(0.25 0.03 245);
+  --input: oklch(0.25 0.03 245);
+  --ring: oklch(0.62 0.12 245);
+  
+  /* Chart Tokens */
+  --chart-1: oklch(0.62 0.12 245);
+  --chart-2: oklch(0.70 0.12 150);
+  --chart-3: oklch(0.80 0.10 45);
+  --chart-4: oklch(0.75 0.08 280);
+  --chart-5: oklch(0.65 0.12 10);
+  
+  /* Sidebar Tokens */
+  --sidebar: oklch(0.12 0.02 245);
+  --sidebar-foreground: oklch(0.94 0.01 245);
+  --sidebar-primary: oklch(0.62 0.12 245);
+  --sidebar-primary-foreground: oklch(0.12 0.02 245);
+  --sidebar-accent: oklch(0.20 0.03 245);
+  --sidebar-accent-foreground: oklch(0.94 0.01 245);
+  --sidebar-border: oklch(0.22 0.03 245);
+  --sidebar-ring: oklch(0.62 0.12 245);
+}
+
+@theme inline {
+  /* Shadcn Core Mapping */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Charts Mapping */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Sidebar Mapping */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Typography */
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  /* Radius */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans min-h-screen;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  code, pre {
+    @apply font-mono;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-primary;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40;
+  }
+}
+
+/* ============================================================
+   全局体验增强：卡片深度、过渡、骨架屏、聚焦态
+   ============================================================ */
+@layer components {
+  /* 卡片悬停微交互 — 顶部高光 + 轻微上浮 */
+  .tn-card-hover {
+    @apply transition-all duration-200 hover:shadow-md hover:shadow-black/5 hover:-translate-y-0.5;
+    position: relative;
+  }
+  .tn-card-hover::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    @apply bg-gradient-to-r from-transparent via-foreground/10 to-transparent opacity-0 transition-opacity duration-200;
+  }
+  .tn-card-hover:hover::before {
+    @apply opacity-100;
+  }
+
+  /* 骨架屏 */
+  .tn-skeleton {
+    @apply animate-pulse rounded bg-muted;
+  }
+
+  /* 数字等宽对齐，避免跳动 */
+  .tn-num {
+    @apply font-mono tabular-nums;
+  }
+
+  /* 状态点呼吸动画 */
+  .tn-pulse-dot {
+    @apply relative;
+  }
+  .tn-pulse-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    @apply bg-current opacity-40 animate-ping;
+  }
+}
+
+/* 页面切换淡入 */
+@keyframes tn-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tn-fade-in {
+  animation: tn-fade-in 0.25s ease-out;
+}
