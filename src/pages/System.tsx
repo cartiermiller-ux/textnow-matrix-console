@@ -86,7 +86,7 @@ export default function System() {
       storageSize = "无法读取";
     }
     return {
-      mode: "前端演示模式",
+      mode: "生产模式",
       persistence: "localStorage 持久化",
       storageKey: storeKey,
       storageSize,

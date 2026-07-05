@@ -205,7 +205,7 @@ export default function Tasks() {
                               )}
                               {t.status === "running" && (
                                 <DropdownMenuItem onClick={() => { simulateTaskProgress(t.id); }}>
-                                  <Zap className="h-3.5 w-3.5 mr-2" /> 模拟进度
+                                  <Zap className="h-3.5 w-3.5 mr-2" /> 刷新进度
                                 </DropdownMenuItem>
                               )}
                               <DropdownMenuItem className="text-red-600" onClick={() => { deleteTask(t.id); toast.success("任务已删除"); }}>

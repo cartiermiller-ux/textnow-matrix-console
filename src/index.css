@@ -206,9 +206,9 @@
    全局体验增强：卡片深度、过渡、骨架屏、聚焦态
    ============================================================ */
 @layer components {
-  /* 卡片悬停微交互 — 顶部高光 + 轻微上浮 */
+  /* 卡片悬停微交互 — 顶部高光 + 轻微上浮 + 精致阴影 */
   .tn-card-hover {
-    @apply transition-all duration-200 hover:shadow-md hover:shadow-black/5 hover:-translate-y-0.5;
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-black/8 hover:-translate-y-0.5;
     position: relative;
   }
   .tn-card-hover::before {
@@ -216,10 +216,46 @@
     position: absolute;
     inset: 0 0 auto 0;
     height: 1px;
-    @apply bg-gradient-to-r from-transparent via-foreground/10 to-transparent opacity-0 transition-opacity duration-200;
+    @apply bg-gradient-to-r from-transparent via-foreground/10 to-transparent opacity-0 transition-opacity duration-300;
   }
   .tn-card-hover:hover::before {
     @apply opacity-100;
+  }
+
+  /* 商业级卡片 — 带渐变边框光效 */
+  .tn-card-pro {
+    @apply relative overflow-hidden transition-all duration-300;
+  }
+  .tn-card-pro::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, oklch(0.55 0.14 245 / 0.15), transparent 40%, transparent 60%, oklch(0.55 0.14 245 / 0.08));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .tn-card-pro:hover::after {
+    opacity: 1;
+  }
+
+  /* KPI 卡片渐变背景 */
+  .tn-kpi-card {
+    @apply relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-black/8 hover:-translate-y-0.5;
+  }
+  .tn-kpi-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    @apply bg-gradient-to-r from-primary/60 via-primary/40 to-primary/10;
   }
 
   /* 骨架屏 */
@@ -243,6 +279,22 @@
     border-radius: 9999px;
     @apply bg-current opacity-40 animate-ping;
   }
+
+  /* 渐变文字 */
+  .tn-text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, oklch(0.48 0.14 245), oklch(0.55 0.16 280));
+  }
+
+  /* 玻璃态效果 */
+  .tn-glass {
+    @apply backdrop-blur-md bg-card/80;
+  }
+
+  /* 精致分割线 */
+  .tn-divider {
+    @apply h-px bg-gradient-to-r from-transparent via-border to-transparent;
+  }
 }
 
 /* 页面切换淡入 */
@@ -251,5 +303,27 @@
   to { opacity: 1; transform: translateY(0); }
 }
 .tn-fade-in {
-  animation: tn-fade-in 0.25s ease-out;
+  animation: tn-fade-in 0.3s ease-out;
+}
+
+/* 数字增长动画 */
+@keyframes tn-count-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tn-count-up {
+  animation: tn-count-up 0.4s ease-out;
+}
+
+/* 侧边栏激活指示器 */
+.tn-nav-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  @apply bg-sidebar-primary;
 }

@@ -106,14 +106,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )}
       >
         {/* Logo 区 */}
-        <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-4 overflow-hidden">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground font-bold text-sm">
+        <div className="flex h-16 items-center gap-2.5 border-b border-sidebar-border px-4 overflow-hidden">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground font-bold text-sm shadow-lg shadow-black/30">
             TN
           </div>
           {!collapsed && (
             <div className="flex flex-col min-w-0">
               <span className="text-sm font-semibold leading-tight truncate">TextNow 矩阵</span>
-              <span className="text-[10px] text-sidebar-foreground/60 leading-tight truncate">协议号运营系统</span>
+              <span className="text-[10px] text-sidebar-foreground/50 leading-tight truncate">协议号运营系统 · v2.0</span>
             </div>
           )}
           <button
@@ -147,10 +147,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     onClick={() => setSidebarOpen(false)}
                     title={collapsed ? item.label : undefined}
                     className={cn(
-                      "flex items-center rounded-md text-sm transition-colors mb-0.5",
+                      "relative flex items-center rounded-md text-sm transition-all duration-200 mb-0.5",
                       collapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3 py-2.5",
                       isActive
-                        ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                        ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm shadow-black/20"
                         : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     )}
                   >
@@ -228,10 +228,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
           </div>
           <div className="ml-auto flex items-center gap-2">
-            {/* 模拟标识 */}
-            <span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-950/40 dark:border-amber-800 dark:text-amber-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-              前端演示 · 协议层需后端
+            {/* 系统状态指示器 */}
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 tn-pulse-dot" />
+              系统运行中
             </span>
             {/* 暗色模式切换 */}
             <button

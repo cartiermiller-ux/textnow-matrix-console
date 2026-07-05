@@ -36,7 +36,6 @@ export default function Accounts() {
   const toggleAccountEnabled = useStore((s) => s.toggleAccountEnabled);
   const renewToken = useStore((s) => s.renewToken);
   const healthCheck = useStore((s) => s.healthCheck);
-  const loadSampleData = useStore((s) => s.loadSampleData);
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -154,9 +153,6 @@ export default function Accounts() {
           </SelectContent>
         </Select>
         <div className="ml-auto flex gap-2">
-          <Button variant="outline" size="sm" onClick={loadSampleData}>
-            <FileUp className="h-4 w-4 mr-1" /> 示例数据
-          </Button>
           <Button size="sm" onClick={() => { setImportOpen(true); setImportResult(null); }}>
             <Upload className="h-4 w-4 mr-1" /> 导入 .jsonl
           </Button>
