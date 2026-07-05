@@ -74,7 +74,7 @@ export default function System() {
 
   // 系统信息
   const systemInfo = useMemo(() => {
-    const storeKey = "textnow-matrix-store";
+    const storeKey = "cartierandmiller-store";
     let storageSize = "—";
     try {
       const raw = localStorage.getItem(storeKey);
@@ -86,7 +86,7 @@ export default function System() {
       storageSize = "无法读取";
     }
     return {
-      mode: "生产模式",
+      mode: "正式运行模式",
       persistence: "localStorage 持久化",
       storageKey: storeKey,
       storageSize,
@@ -105,7 +105,7 @@ export default function System() {
   return (
     <div className="space-y-4">
       {/* 系统信息卡片 */}
-      <Card className="tn-card-hover p-4">
+      <Card className="p-4">
         <div className="flex items-center gap-2 mb-3">
           <Server className="h-4 w-4 text-primary" />
           <h3 className="text-sm font-semibold">系统信息</h3>
@@ -362,7 +362,7 @@ export default function System() {
 
         {/* === 开放API Tab === */}
         <TabsContent value="api" className="mt-4 space-y-4">
-          <Card className="tn-card-hover p-4">
+          <Card className="p-4">
             <div className="flex items-start gap-2">
               <KeyRound className="h-4 w-4 text-primary mt-0.5 shrink-0" />
               <div>
@@ -400,7 +400,7 @@ export default function System() {
           </Card>
 
           {/* 调用示例 */}
-          <Card className="tn-card-hover p-4">
+          <Card className="p-4">
             <div className="flex items-center gap-2 mb-3">
               <Database className="h-4 w-4 text-primary" />
               <h3 className="text-sm font-semibold">调用示例（curl）</h3>

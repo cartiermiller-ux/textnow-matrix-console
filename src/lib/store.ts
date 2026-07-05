@@ -20,7 +20,7 @@ import type {
   ConversationAssignment,
   AssignmentStrategy,
 } from "./types";
-import { NATIVE_FIELDS } from "./types";
+import { NATIVE_FIELDS, type NativeField } from "./types";
 import { DEFAULT_RISK_CONFIG, SENSITIVE_WORDS } from "./constants";
 
 // ============================================================
@@ -33,146 +33,6 @@ function uid(prefix = ""): string {
 
 function nowISO(): string {
   return new Date().toISOString();
-}
-
-/** 生成示例全参号（用于演示） */
-function genSampleAccount(phone: string, idx: number): Account {
-  const models = ["iPhone 11", "iPhone 12", "iPhone 13", "iPhone 14", "iPhone 15"];
-  const model = models[idx % models.length];
-  return {
-    id: uid("acc_"),
-    "Cookie": "",
-    "IDFA": crypto.randomUUID().toUpperCase(),
-    "User-Agent": `TextNow/25.4.0 (${model}; iOS 17.5.1; Scale/3.00)`,
-    "X-PX-AUTHORIZATION": `Bearer px_${uid()}${idx}sig`,
-    "X-PX-DEVICE-FP": `fp_${uid()}${idx}`,
-    "X-PX-DEVICE-MODEL": model,
-    "X-PX-MOBILE-SDK-VERSION": "1.8.2-px",
-    "X-PX-OS": "iOS",
-    "X-PX-OS-VERSION": "17.5.1",
-    "X-PX-UUID": crypto.randomUUID(),
-    "X-PX-VID": `vid_${uid()}`,
-    "clientId": `cli_${uid()}`,
-    "email": `user${phone}@textnow.me`,
-    "phone": phone,
-    "username": `tn_user_${phone.slice(-4)}`,
-    emailPassword: "",
-    accountPassword: "",
-    proxyIp: `http://user${idx}:pass@res-us-${idx % 5}.proxy.io:8080`,
-    tokenExpiry: new Date(Date.now() + (idx % 3) * 12 * 3600 * 1000 + 6 * 3600 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - idx * 86400000).toISOString(),
-    lastActiveAt: new Date(Date.now() - idx * 3600000).toISOString(),
-    group: (["marketing", "service", "backup", "test"] as AccountGroup[])[idx % 4],
-    status: (["normal", "normal", "normal", "pending_renew", "banned"] as AccountStatus[])[idx % 5],
-    enabled: idx % 7 !== 0,
-    totalSent: Math.floor(Math.random() * 500),
-    totalReceived: Math.floor(Math.random() * 200),
-    notes: "",
-  };
-}
-
-/** 生成示例模板 */
-function genSampleTemplates(): MessageTemplate[] {
-  return [
-    {
-      id: uid("tpl_"),
-      name: "营销推广-标准版",
-      category: "营销",
-      content: "Hi! Special offer for you: {随机数字}% off. Reply STOP to opt out. Code: {收件人号后四位}{时间戳}",
-      enabled: true,
-      createdAt: nowISO(),
-      usageCount: 0,
-    },
-    {
-      id: uid("tpl_"),
-      name: "客服通知-验证码",
-      category: "客服",
-      content: "Your verification code is {随机数字}. Do not share it. Ref: {收件人号后四位}",
-      enabled: true,
-      createdAt: nowISO(),
-      usageCount: 0,
-    },
-    {
-      id: uid("tpl_"),
-      name: "节日问候-随机话术",
-      category: "问候",
-      content: "Hey there! {随机字母} Hope you're having a great day. Deal ends soon - {随机数字} off!",
-      enabled: true,
-      createdAt: nowISO(),
-      usageCount: 0,
-    },
-  ];
-}
-
-/** 生成示例自动回复规则 */
-function genSampleRules(): AutoReplyRule[] {
-  return [
-    {
-      id: uid("rule_"),
-      name: "STOP退订回复",
-      matchType: "exact",
-      keywords: "STOP\nUNSTOP\nCANCEL\nEND",
-      replyContent: "You have been unsubscribed. You will not receive further messages.",
-      enabled: true,
-      priority: 1,
-      hitCount: 0,
-      isMultiTurn: false,
-    },
-    {
-      id: uid("rule_"),
-      name: "关键词-优惠咨询",
-      matchType: "fuzzy",
-      keywords: "优惠\n折扣\ndeal\noffer\ndiscount",
-      replyContent: "Current promotion: {随机数字}% off! Limited time. Reply YES to claim.",
-      enabled: true,
-      priority: 2,
-      hitCount: 0,
-      isMultiTurn: false,
-    },
-    {
-      id: uid("rule_"),
-      name: "正则-验证码请求",
-      matchType: "regex",
-      keywords: "(code|verify|验证码|OTP).{0,10}",
-      replyContent: "Your code: {随机数字}. Expires in 10 min.",
-      enabled: true,
-      priority: 3,
-      hitCount: 0,
-      isMultiTurn: true,
-      multiTurnContext: "code_request",
-    },
-  ];
-}
-
-function genSampleSeats(): Seat[] {
-  const groups: SeatGroup[] = ["sales", "support", "vip", "backup"];
-  const skillsPool: SeatSkill[][] = [
-    ["textnow", "marketing"],
-    ["textnow", "complaint", "technical"],
-    ["textnow", "multilingual", "marketing"],
-    ["textnow", "technical"],
-  ];
-  const names = ["张小明", "李婷婷", "王建国", "陈雅琴", "刘志强", "赵美玲"];
-  const statuses: SeatStatus[] = ["online", "online", "busy", "away", "offline", "online"];
-  return names.map((name, i) => ({
-    id: uid("seat_"),
-    name,
-    seatNo: `S${String(i + 1).padStart(3, "0")}`,
-    group: groups[i % groups.length],
-    skills: skillsPool[i % skillsPool.length],
-    status: statuses[i],
-    enabled: i < 5,
-    maxConcurrent: i % 3 === 0 ? 5 : 3,
-    boundAccountIds: [] as string[],
-    totalConversations: Math.floor(Math.random() * 500) + 50,
-    totalReplies: Math.floor(Math.random() * 2000) + 100,
-    avgResponseSec: Math.floor(Math.random() * 60) + 10,
-    satisfaction: Math.floor(Math.random() * 20) + 80,
-    onlineHours: Math.floor(Math.random() * 200) + 20,
-    workSchedule: "周一至周五 09:00-18:00",
-    createdAt: nowISO(),
-    lastActiveAt: nowISO(),
-  }));
 }
 
 // ============================================================
@@ -253,7 +113,6 @@ interface StoreState {
 
   // 工具
   resetAll: () => void;
-  loadSampleData: () => void;
 }
 
 // ============================================================
@@ -269,13 +128,13 @@ export const useStore = create<StoreState>()(
     (set, get): StoreState => ({
       accounts: [] as Account[],
       tasks: [] as SendTask[],
-      templates: genSampleTemplates(),
+      templates: [] as MessageTemplate[],
       conversations: [] as Conversation[],
-      rules: genSampleRules(),
+      rules: [] as AutoReplyRule[],
       sendRecords: [] as SendRecord[],
       riskConfig: DEFAULT_RISK_CONFIG,
       logs: [] as OperationLog[],
-      seats: genSampleSeats(),
+      seats: [] as Seat[],
       assignments: [] as ConversationAssignment[],
       users: [
         { id: uid("usr_"), username: "admin", role: "admin", enabled: true, createdAt: nowISO() },
@@ -752,27 +611,16 @@ export const useStore = create<StoreState>()(
           conversations: [],
           sendRecords: [],
           logs: [],
-          templates: genSampleTemplates(),
-          rules: genSampleRules(),
+          templates: [],
+          rules: [],
           riskConfig: DEFAULT_RISK_CONFIG,
-          seats: genSampleSeats(),
+          seats: [],
           assignments: [],
         });
       },
-
-      loadSampleData: () => {
-        const phones = [
-          "2025550143", "2025550188", "2135550167", "3055550123", "4045550199",
-          "4155550177", "5035550156", "6175550134", "6505550188", "7185550145",
-          "2025550192", "2135550144", "3055550178", "4045550166", "4155550193",
-        ];
-        const samples = phones.map((p, i) => genSampleAccount(p, i));
-        set((s) => ({ accounts: [...s.accounts, ...samples] }));
-        get().addLog("加载示例数据", `15 条账号`, "已加载 15 条示例全参号", "info");
-      },
     }),
     {
-      name: "textnow-matrix-store",
+      name: "cartierandmiller-store",
       partialize: (s): PersistedState => ({
         accounts: s.accounts,
         tasks: s.tasks,
@@ -815,4 +663,4 @@ export function checkSensitive(content: string): string[] {
   return SENSITIVE_WORDS.filter((w) => lower.includes(w.toLowerCase()));
 }
 
-export { genSampleAccount, uid, nowISO };
+export { uid, nowISO };

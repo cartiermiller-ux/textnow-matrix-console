@@ -1,11 +1,12 @@
 import { useState, useRef, useMemo } from "react";
 import { useStore } from "@/lib/store";
-import { STATUS_MAP, GROUP_MAP } from "@/lib/constants";
+import { FIELD_LABELS, STATUS_MAP, GROUP_MAP } from "@/lib/constants";
 import { NATIVE_FIELDS } from "@/lib/types";
 import type { Account, AccountGroup, AccountStatus } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
@@ -67,11 +68,7 @@ export default function Accounts() {
   };
   const toggleOne = (id: string) => {
     const next = new Set(selected);
-    if (next.has(id)) {
-      next.delete(id);
-    } else {
-      next.add(id);
-    }
+    next.has(id) ? next.delete(id) : next.add(id);
     setSelected(next);
   };
 
