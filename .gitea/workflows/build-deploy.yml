@@ -1,0 +1,108 @@
+name: 构建与部署
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "20"
+  PNPM_VERSION: "9"
+
+jobs:
+  # ============ 检测变更 ============
+  changes:
+    name: 检测变更范围
+    runs-on: ubuntu-latest
+    outputs:
+      src: ${{ steps.filter.outputs.src }}
+      deploy: ${{ steps.filter.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            src:
+              - 'src/**'
+              - 'public/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'vite.config.ts'
+              - 'tsconfig*.json'
+            deploy:
+              - 'dist/**'
+              - '.gitea/workflows/**'
+
+  # ============ 代码检查 ============
+  lint:
+    name: 代码检查
+    needs: changes
+    if: ${{ needs.changes.outputs.src == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: 安装依赖
+        run: npm ci
+      - name: ESLint 检查
+        run: npm run lint
+      - name: TypeScript 类型检查
+        run: npx tsc --noEmit
+
+  # ============ 构建 ============
+  build:
+    name: 构建产物
+    needs: [changes, lint]
+    if: ${{ needs.changes.outputs.src == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: 安装依赖
+        run: npm ci
+      - name: 构建生产包
+        run: npm run build
+        env:
+          VITE_ENABLE_ROUTE_MESSAGING: "true"
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.sha }}
+          path: dist/
+          retention-days: 7
+
+  # ============ 部署到静态托管 ============
+  deploy:
+    name: 部署
+    needs: [changes, build]
+    if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.src == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 下载构建产物
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ github.sha }}
+          path: dist/
+      - name: 部署到静态服务器
+        run: |
+          echo "部署产物到静态托管平台"
+          # 方式一：rsync 到自有服务器
+          # rsync -avz --delete dist/ user@server:/var/www/textnow-console/
+          #
+          # 方式二：推送到 OSS/COS
+          # ossutil cp -r dist/ oss://bucket-name/ --update
+          #
+          # 方式三：Vercel 部署（见 vercel.yml 工作流）
+          echo "请在此处替换为实际部署命令"
+          ls -lh dist/ | head -5

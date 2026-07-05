@@ -233,10 +233,62 @@ export default defineConfig(({ mode }) => {
       // In production, this will be false by default unless explicitly set to 'true'
       // In development and test, this will be true by default
       __ROUTE_MESSAGING_ENABLED__: JSON.stringify(
-        mode === 'production' 
+        mode === 'production'
           ? process.env.VITE_ENABLE_ROUTE_MESSAGING === 'true'
           : process.env.VITE_ENABLE_ROUTE_MESSAGING !== 'false'
       ),
+    },
+    build: {
+      // 拆分大块 vendor 库，避免单个 chunk 超过 500KB
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // React 核心
+            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+            // Radix UI 原语（20+ 包，体积最大）
+            'radix-ui': [
+              '@radix-ui/react-dialog',
+              '@radix-ui/react-dropdown-menu',
+              '@radix-ui/react-popover',
+              '@radix-ui/react-select',
+              '@radix-ui/react-tabs',
+              '@radix-ui/react-tooltip',
+              '@radix-ui/react-checkbox',
+              '@radix-ui/react-label',
+              '@radix-ui/react-radio-group',
+              '@radix-ui/react-separator',
+              '@radix-ui/react-slot',
+              '@radix-ui/react-switch',
+              '@radix-ui/react-toast',
+              '@radix-ui/react-avatar',
+              '@radix-ui/react-progress',
+              '@radix-ui/react-scroll-area',
+              '@radix-ui/react-toggle',
+              '@radix-ui/react-toggle-group',
+              '@radix-ui/react-accordion',
+              '@radix-ui/react-alert-dialog',
+              '@radix-ui/react-aspect-ratio',
+              '@radix-ui/react-collapsible',
+              '@radix-ui/react-context-menu',
+              '@radix-ui/react-hover-card',
+              '@radix-ui/react-navigation-menu',
+              '@radix-ui/react-slider',
+            ],
+            // 图表库（recharts 较大）
+            'charts': ['recharts'],
+            // 图标库
+            'icons': ['lucide-react'],
+            // 动画
+            'animation': ['framer-motion'],
+            // 状态管理与数据请求
+            'data': ['zustand', '@tanstack/react-query'],
+            // 工具库
+            'utils': ['clsx', 'tailwind-merge', 'class-variance-authority', 'date-fns', 'sonner'],
+          },
+        },
+      },
+      // 适度提高警告阈值，避免 vendor 合并包的噪音警告
+      chunkSizeWarningLimit: 600,
     },
   }
 });

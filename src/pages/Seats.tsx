@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useStore } from "@/lib/store";
-import type { Seat, SeatStatus, SeatGroup, SeatSkill } from "@/lib/types";
+import type { Seat, SeatStatus, SeatGroup, SeatSkill, AssignmentStrategy } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table";
 import { toast } from "sonner";
 import {
-  Headset, Plus, Edit3, Trash2, UserCheck, UserX,
+  Headset, Plus, Edit3, Trash2, UserCheck, UserX, Clock,
   MessageSquare, Star, Activity, Search, Link2, Zap,
 } from "lucide-react";
 
@@ -27,6 +27,13 @@ const STATUS_LABEL: Record<SeatStatus, string> = {
   busy: "忙碌",
   away: "离开",
   offline: "离线",
+};
+
+const STATUS_COLOR: Record<SeatStatus, string> = {
+  online: "bg-green-500/20 text-green-600 border-green-200",
+  busy: "bg-orange-500/20 text-orange-600 border-orange-200",
+  away: "bg-yellow-500/20 text-yellow-600 border-yellow-200",
+  offline: "bg-gray-300/30 text-gray-500 border-gray-200",
 };
 
 const STATUS_DOT: Record<SeatStatus, string> = {
@@ -51,6 +58,13 @@ const SKILL_LABEL: Record<SeatSkill, string> = {
   multilingual: "多语言",
 };
 
+const STRATEGY_LABEL: Record<AssignmentStrategy, string> = {
+  round_robin: "轮询分配",
+  least_load: "最少负荷",
+  skill_match: "技能匹配",
+  manual: "人工指定",
+};
+
 export default function Seats() {
   const seats = useStore((s) => s.seats);
   const accounts = useStore((s) => s.accounts);
@@ -63,6 +77,7 @@ export default function Seats() {
   const bindSeatAccounts = useStore((s) => s.bindSeatAccounts);
   const assignConversation = useStore((s) => s.assignConversation);
   const autoAssignConversation = useStore((s) => s.autoAssignConversation);
+  const addLog = useStore((s) => s.addLog);
 
   const [search, setSearch] = useState("");
   const [groupFilter, setGroupFilter] = useState<string>("all");
@@ -71,6 +86,8 @@ export default function Seats() {
   const [editingSeat, setEditingSeat] = useState<Seat | null>(null);
   const [bindDialogOpen, setBindDialogOpen] = useState(false);
   const [bindSeat, setBindSeat] = useState<Seat | null>(null);
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [assignConvId, setAssignConvId] = useState("");
   const [convFilter, setConvFilter] = useState<"all" | "unassigned" | "assigned">("unassigned");
   const [convSearch, setConvSearch] = useState("");
 
@@ -218,37 +235,37 @@ export default function Seats() {
     <div className="space-y-5">
       {/* 统计卡片 */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
             <Headset className="h-3.5 w-3.5" /> 坐席总数
           </div>
           <div className="text-2xl font-bold">{stats.total}</div>
         </Card>
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
             <span className="h-2 w-2 rounded-full bg-green-500" /> 在线
           </div>
           <div className="text-2xl font-bold text-green-600">{stats.online}</div>
         </Card>
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
             <span className="h-2 w-2 rounded-full bg-orange-500" /> 忙碌
           </div>
           <div className="text-2xl font-bold text-orange-600">{stats.busy}</div>
         </Card>
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
             <Activity className="h-3.5 w-3.5" /> 活跃会话
           </div>
           <div className="text-2xl font-bold text-blue-600">{stats.activeAssignments}</div>
         </Card>
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
             <MessageSquare className="h-3.5 w-3.5" /> 累计接待
           </div>
           <div className="text-2xl font-bold">{stats.totalConv}</div>
         </Card>
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
             <Star className="h-3.5 w-3.5" /> 平均满意度
           </div>
@@ -451,7 +468,7 @@ export default function Seats() {
       </Card>
 
       {/* 会话分配区 */}
-      <Card className="tn-card-hover p-4">
+      <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h3 className="text-sm font-semibold flex items-center gap-2">

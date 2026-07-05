@@ -87,7 +87,7 @@ export default function Templates() {
       </div>
 
       {/* 变量系统说明面板 */}
-      <Card className="tn-card-hover p-4">
+      <Card className="p-4">
         <div className="flex items-center gap-2 mb-3">
           <Variable className="h-4 w-4 text-primary" />
           <h3 className="text-sm font-semibold">内置变量系统</h3>

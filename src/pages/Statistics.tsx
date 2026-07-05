@@ -230,7 +230,7 @@ export default function Statistics() {
       {/* 图表区 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* 账号状态分布饼图 */}
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <Activity className="h-4 w-4 text-primary" />
             <h3 className="text-sm font-semibold">账号状态分布</h3>
@@ -274,7 +274,7 @@ export default function Statistics() {
         </Card>
 
         {/* 分组分布柱状图 */}
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <BarChart3 className="h-4 w-4 text-primary" />
             <h3 className="text-sm font-semibold">分组分布</h3>

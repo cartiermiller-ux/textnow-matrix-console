@@ -153,7 +153,7 @@ export default function Chat() {
       status: "received",
       isAutoReply: false,
     });
-    toast.success(`测试收信：${acc.phone} ← ${peerNumber}`);
+    toast.success(`模拟收信：${acc.phone} ← ${peerNumber}`);
   };
 
   const handleExportCsv = () => {
@@ -214,7 +214,7 @@ export default function Chat() {
           </TabsList>
           <div className="ml-auto flex gap-2">
             <Button variant="outline" size="sm" onClick={handleSimulateIncoming}>
-              <Radio className="h-4 w-4 mr-1" /> 测试收信
+              <Radio className="h-4 w-4 mr-1" /> 模拟收信
             </Button>
           </div>
         </div>
@@ -240,7 +240,7 @@ export default function Chat() {
                   {filteredConvs.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
                       <Inbox className="h-8 w-8 text-muted-foreground/50 mb-2" />
-                      <p className="text-xs text-muted-foreground">暂无会话，点击测试收信测试</p>
+                      <p className="text-xs text-muted-foreground">暂无会话，点击模拟收信测试</p>
                     </div>
                   ) : (
                     <div className="divide-y divide-border/50">
@@ -368,7 +368,7 @@ export default function Chat() {
                   <div className="flex flex-col items-center justify-center h-full py-16">
                     <MessageSquare className="h-10 w-10 text-muted-foreground/40 mb-3" />
                     <p className="text-sm text-muted-foreground">选择左侧会话查看消息</p>
-                    <p className="text-xs text-muted-foreground/70 mt-1">或点击"测试收信"生成测试会话</p>
+                    <p className="text-xs text-muted-foreground/70 mt-1">或点击"模拟收信"生成测试会话</p>
                   </div>
                 )}
               </div>

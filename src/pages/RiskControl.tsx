@@ -127,7 +127,7 @@ export default function RiskControl() {
       {/* 配置表单 — 三区块 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* 区块一：发送强度限制 */}
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 mb-4">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50">
               <Gauge className="h-3.5 w-3.5 text-blue-600" />
@@ -221,7 +221,7 @@ export default function RiskControl() {
         </Card>
 
         {/* 区块二：异常熔断 */}
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 mb-4">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50">
               <Zap className="h-3.5 w-3.5 text-amber-600" />
@@ -284,7 +284,7 @@ export default function RiskControl() {
         </Card>
 
         {/* 区块三：保活续期 */}
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 mb-4">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50">
               <RefreshCw className="h-3.5 w-3.5 text-green-600" />

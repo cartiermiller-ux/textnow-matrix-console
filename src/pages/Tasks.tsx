@@ -205,7 +205,7 @@ export default function Tasks() {
                               )}
                               {t.status === "running" && (
                                 <DropdownMenuItem onClick={() => { simulateTaskProgress(t.id); }}>
-                                  <Zap className="h-3.5 w-3.5 mr-2" /> 刷新进度
+                                  <Zap className="h-3.5 w-3.5 mr-2" /> 模拟进度
                                 </DropdownMenuItem>
                               )}
                               <DropdownMenuItem className="text-red-600" onClick={() => { deleteTask(t.id); toast.success("任务已删除"); }}>
@@ -224,7 +224,7 @@ export default function Tasks() {
         </Card>
 
         {/* 失败原因分布 */}
-        <Card className="tn-card-hover p-4">
+        <Card className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <AlertTriangle className="h-4 w-4 text-primary" />
             <h3 className="text-sm font-semibold">失败原因分布</h3>
